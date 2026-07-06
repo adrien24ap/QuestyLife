@@ -1,7 +1,7 @@
 "use client";
 
 import type { Session } from "@supabase/supabase-js";
-import { Cloud, Download, LogOut, Mail, Upload } from "lucide-react";
+import { Cloud, Download, LogIn, LogOut, Upload, UserPlus } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { applyQuestyLifeData, collectQuestyLifeData, type QuestyLifeCloudPayload } from "@/lib/questylifeData";
 import { getSiteUrl } from "@/lib/siteUrl";
@@ -16,6 +16,7 @@ type CloudRow = {
 export function CloudSync() {
   const supabase = getSupabaseClient();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [session, setSession] = useState<Session | null>(null);
   const [status, setStatus] = useState("Prêt.");
   const [loading, setLoading] = useState(false);
@@ -78,12 +79,31 @@ export function CloudSync() {
 
   async function signIn(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!supabase || !email.trim()) return;
+    if (!supabase || !email.trim() || !password) return;
 
     setLoading(true);
-    setStatus("Envoi du lien de connexion...");
-    const { error } = await supabase.auth.signInWithOtp({
+    setStatus("Connexion...");
+    const { error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
+      password
+    });
+
+    if (error) {
+      setStatus(`Erreur : ${error.message}`);
+    } else {
+      setStatus("Connecté.");
+    }
+    setLoading(false);
+  }
+
+  async function signUp() {
+    if (!supabase || !email.trim() || !password) return;
+
+    setLoading(true);
+    setStatus("Création du compte...");
+    const { error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
       options: {
         emailRedirectTo: `${getSiteUrl()}/sync`
       }
@@ -92,7 +112,7 @@ export function CloudSync() {
     if (error) {
       setStatus(`Erreur : ${error.message}`);
     } else {
-      setStatus("Lien envoyé. Ouvre ton email sur cet appareil pour te connecter.");
+      setStatus("Compte créé. Si Supabase demande une confirmation, ouvre le mail reçu une seule fois.");
     }
     setLoading(false);
   }
@@ -185,10 +205,31 @@ export function CloudSync() {
               value={email}
             />
           </div>
-          <button className="btn" disabled={loading} type="submit">
-            <Mail size={18} aria-hidden="true" />
-            Recevoir le lien de connexion
-          </button>
+          <div className="field">
+            <label htmlFor="sync-password">Mot de passe</label>
+            <input
+              className="input"
+              id="sync-password"
+              minLength={6}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Minimum 6 caractères"
+              type="password"
+              value={password}
+            />
+          </div>
+          <div className="actions">
+            <button className="btn" disabled={loading} type="submit">
+              <LogIn size={18} aria-hidden="true" />
+              Me connecter
+            </button>
+            <button className="btn secondary" disabled={loading} onClick={signUp} type="button">
+              <UserPlus size={18} aria-hidden="true" />
+              Créer mon compte
+            </button>
+          </div>
+          <p className="subtle">
+            Le lien email reste seulement utilisé si Supabase demande une confirmation à la création du compte.
+          </p>
         </form>
       ) : (
         <div className="grid" style={{ marginTop: 16 }}>
