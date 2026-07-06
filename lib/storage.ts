@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const STORAGE_SYNC_EVENT = "questylife-storage-sync";
 
@@ -28,9 +28,12 @@ export function notifyStorageSync(key: string) {
 export function useLocalStorage<T>(key: string, fallback: T) {
   const [value, setValue] = useState<T>(fallback);
   const [ready, setReady] = useState(false);
+  const lastSerialized = useRef<string | null>(null);
 
   useEffect(() => {
-    setValue(readStorage(key, fallback));
+    const storedValue = readStorage(key, fallback);
+    lastSerialized.current = JSON.stringify(storedValue);
+    setValue(storedValue);
     setReady(true);
   }, [key]);
 
@@ -38,7 +41,12 @@ export function useLocalStorage<T>(key: string, fallback: T) {
     function refresh(event: Event) {
       const customEvent = event as CustomEvent<{ key?: string }>;
       if (!customEvent.detail?.key || customEvent.detail.key === key) {
-        setValue(readStorage(key, fallback));
+        const storedValue = readStorage(key, fallback);
+        const nextSerialized = JSON.stringify(storedValue);
+        if (lastSerialized.current !== nextSerialized) {
+          lastSerialized.current = nextSerialized;
+          setValue(storedValue);
+        }
       }
     }
 
@@ -52,6 +60,9 @@ export function useLocalStorage<T>(key: string, fallback: T) {
 
   useEffect(() => {
     if (ready) {
+      const nextSerialized = JSON.stringify(value);
+      if (lastSerialized.current === nextSerialized) return;
+      lastSerialized.current = nextSerialized;
       writeStorage(key, value);
       notifyStorageSync(key);
     }

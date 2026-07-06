@@ -1,7 +1,7 @@
 "use client";
 
 import type { Session } from "@supabase/supabase-js";
-import { Cloud, Download, LogOut, Mail, Save, Upload } from "lucide-react";
+import { Cloud, Download, LogOut, Mail, Upload } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { applyQuestyLifeData, collectQuestyLifeData, type QuestyLifeCloudPayload } from "@/lib/questylifeData";
 import { getSupabaseClient } from "@/lib/supabase";
