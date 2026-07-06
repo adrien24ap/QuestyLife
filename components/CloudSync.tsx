@@ -4,6 +4,7 @@ import type { Session } from "@supabase/supabase-js";
 import { Cloud, Download, LogOut, Mail, Upload } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { applyQuestyLifeData, collectQuestyLifeData, type QuestyLifeCloudPayload } from "@/lib/questylifeData";
+import { getSiteUrl } from "@/lib/siteUrl";
 import { getSupabaseClient } from "@/lib/supabase";
 import { STORAGE_SYNC_EVENT } from "@/lib/storage";
 
@@ -84,7 +85,7 @@ export function CloudSync() {
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: {
-        emailRedirectTo: `${window.location.origin}/sync`
+        emailRedirectTo: `${getSiteUrl()}/sync`
       }
     });
 

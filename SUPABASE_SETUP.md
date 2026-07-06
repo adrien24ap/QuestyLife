@@ -67,6 +67,18 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 avec la valeur `anon public key`.
 
+Ajoute aussi :
+
+```txt
+NEXT_PUBLIC_SITE_URL
+```
+
+avec ton adresse Vercel :
+
+```txt
+https://questy-life.vercel.app
+```
+
 Ensuite redéploie le projet.
 
 ## 5. Autoriser l'adresse Vercel dans Supabase
