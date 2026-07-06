@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Dumbbell, NotebookPen } from "lucide-react";
+import { ArrowRight, Cloud, Dumbbell, NotebookPen } from "lucide-react";
 import { currentWeight, GOAL_WEIGHT_KG, missionCompletion, percent, weightGoalProgress } from "@/lib/calculations";
 import { todayIso } from "@/lib/dates";
 import { useLocalStorage } from "@/lib/storage";
@@ -44,7 +44,7 @@ export function HomeDashboard() {
         </DashboardCard>
       </section>
 
-      <section className="grid grid-2" style={{ marginTop: 16 }}>
+      <section className="grid grid-3" style={{ marginTop: 16 }}>
         <DashboardCard title="Prochaine séance" value={nextSession ? nextSession.type : "À planifier"} note={nextSession ? `${nextSession.durationMinutes} min - ressenti ${nextSession.feeling}/10` : "Push, Pull, Legs ou Cardio"}>
           <Link className="btn secondary" href="/sport">
             <Dumbbell size={18} aria-hidden="true" />
@@ -56,6 +56,12 @@ export function HomeDashboard() {
             <NotebookPen size={18} aria-hidden="true" />
             Faire mon récap
             <ArrowRight size={18} aria-hidden="true" />
+          </Link>
+        </DashboardCard>
+        <DashboardCard title="Cloud" note="Synchronise les données entre ordinateur et téléphone.">
+          <Link className="btn secondary" href="/sync">
+            <Cloud size={18} aria-hidden="true" />
+            Ouvrir la sync
           </Link>
         </DashboardCard>
       </section>

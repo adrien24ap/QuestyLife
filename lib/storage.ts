@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+export const STORAGE_SYNC_EVENT = "questylife-storage-sync";
+
 export function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
 
@@ -18,6 +20,11 @@ export function writeStorage<T>(key: string, value: T) {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
+export function notifyStorageSync(key: string) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(STORAGE_SYNC_EVENT, { detail: { key } }));
+}
+
 export function useLocalStorage<T>(key: string, fallback: T) {
   const [value, setValue] = useState<T>(fallback);
   const [ready, setReady] = useState(false);
@@ -28,7 +35,26 @@ export function useLocalStorage<T>(key: string, fallback: T) {
   }, [key]);
 
   useEffect(() => {
-    if (ready) writeStorage(key, value);
+    function refresh(event: Event) {
+      const customEvent = event as CustomEvent<{ key?: string }>;
+      if (!customEvent.detail?.key || customEvent.detail.key === key) {
+        setValue(readStorage(key, fallback));
+      }
+    }
+
+    window.addEventListener(STORAGE_SYNC_EVENT, refresh);
+    window.addEventListener("storage", refresh);
+    return () => {
+      window.removeEventListener(STORAGE_SYNC_EVENT, refresh);
+      window.removeEventListener("storage", refresh);
+    };
+  }, [fallback, key]);
+
+  useEffect(() => {
+    if (ready) {
+      writeStorage(key, value);
+      notifyStorageSync(key);
+    }
   }, [key, ready, value]);
 
   return [value, setValue] as const;

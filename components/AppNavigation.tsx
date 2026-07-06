@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, Dumbbell, History, Home, Scale, ClipboardCheck } from "lucide-react";
+import { Activity, Cloud, Dumbbell, History, Home, Scale, ClipboardCheck } from "lucide-react";
 
 const links = [
   { href: "/", label: "Accueil", icon: Home },
   { href: "/poids", label: "Poids", icon: Scale },
   { href: "/sport", label: "Sport", icon: Dumbbell },
   { href: "/recap", label: "Récap", icon: ClipboardCheck },
-  { href: "/historique", label: "Historique", icon: History }
+  { href: "/historique", label: "Historique", icon: History },
+  { href: "/sync", label: "Sync", icon: Cloud }
 ];
 
 export function AppNavigation() {

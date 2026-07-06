@@ -216,6 +216,11 @@ h3 {
   background: var(--brand-strong);
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
 .btn.secondary {
   background: var(--surface-strong);
   color: var(--ink);
