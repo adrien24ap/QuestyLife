@@ -3,9 +3,10 @@
 import { useMemo, useState } from "react";
 import { formatDate, sortByDateDesc } from "@/lib/dates";
 import { useLocalStorage } from "@/lib/storage";
-import type { DailyRecap, HistoryItem, HistoryKind, Mission, SportSession, WaterLog, WeightEntry } from "@/types";
+import type { DailyRecap, HistoryItem, HistoryKind, Mission, SleepEntry, SportSession, WaterLog, WeightEntry } from "@/types";
+import { DayDetails } from "./DayDetails";
 
-const filters: Array<"all" | HistoryKind> = ["all", "poids", "sport", "recap", "missions", "eau"];
+const filters: Array<"all" | HistoryKind> = ["all", "poids", "sport", "recap", "missions", "eau", "sommeil"];
 
 export function HistoryList() {
   const [filter, setFilter] = useState<"all" | HistoryKind>("all");
@@ -15,6 +16,7 @@ export function HistoryList() {
   const [recaps] = useLocalStorage<DailyRecap[]>("questylife.recaps", []);
   const [missions] = useLocalStorage<Mission[]>("questylife.missions", []);
   const [water] = useLocalStorage<WaterLog[]>("questylife.water", []);
+  const [sleep] = useLocalStorage<SleepEntry[]>("questylife.sleep", []);
 
   const items = useMemo<HistoryItem[]>(() => {
     const groupedMissions = Object.values(
@@ -59,9 +61,16 @@ export function HistoryList() {
         type: "eau" as const,
         title: `${(entry.amountMl / 1000).toFixed(2)} L`,
         detail: `Objectif ${(entry.goalMl / 1000).toFixed(1)} L`
+      })),
+      ...sleep.map((entry) => ({
+        id: entry.id,
+        date: entry.date,
+        type: "sommeil" as const,
+        title: `${entry.durationHours.toFixed(1)} h`,
+        detail: `Qualité ${entry.quality}/10${entry.comment ? ` - ${entry.comment}` : ""}`
       }))
     ];
-  }, [weights, sport, recaps, missions, water]);
+  }, [weights, sport, recaps, missions, water, sleep]);
 
   const visible = sortByDateDesc(
     items.filter((item) => (filter === "all" || item.type === filter) && (!dateFilter || item.date === dateFilter))
@@ -88,15 +97,16 @@ export function HistoryList() {
 
       <div style={{ marginTop: 16 }}>
         {visible.length === 0 ? <p className="subtle">Aucune donnée pour ce filtre.</p> : null}
+        {dateFilter ? <DayDetails date={dateFilter} /> : null}
         {visible.map((item) => (
-          <article className="history-row" key={`${item.type}-${item.id}`}>
+          <button className="history-row history-button" key={`${item.type}-${item.id}`} onClick={() => setDateFilter(item.date)} type="button">
             <span className="pill">{item.type}</span>
             <div>
               <h3>{item.title}</h3>
               <p className="subtle">{item.detail}</p>
             </div>
             <strong>{formatDate(item.date)}</strong>
-          </article>
+          </button>
         ))}
       </div>
     </section>

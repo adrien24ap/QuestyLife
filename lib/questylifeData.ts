@@ -7,7 +7,8 @@ export const QUESTYLIFE_STORAGE_KEYS = [
   "questylife.water",
   "questylife.weights",
   "questylife.recaps",
-  "questylife.sport"
+  "questylife.sport",
+  "questylife.sleep"
 ] as const;
 
 export type QuestyLifeStorageKey = (typeof QUESTYLIFE_STORAGE_KEYS)[number];

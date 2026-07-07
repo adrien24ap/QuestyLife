@@ -30,6 +30,16 @@ export type DailyRecap = {
   note?: string;
 };
 
+export type SleepEntry = {
+  id: string;
+  date: string;
+  bedtime: string;
+  wakeTime: string;
+  durationHours: number;
+  quality: number;
+  comment?: string;
+};
+
 export type SportType = "Push" | "Pull" | "Legs" | "Cardio" | "Autre";
 
 export type ExerciseSet = {
@@ -56,7 +66,7 @@ export type SportSession = {
   exercises: Exercise[];
 };
 
-export type HistoryKind = "missions" | "eau" | "poids" | "sport" | "recap";
+export type HistoryKind = "missions" | "eau" | "poids" | "sport" | "recap" | "sommeil";
 
 export type HistoryItem = {
   id: string;

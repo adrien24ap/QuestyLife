@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, Cloud, Dumbbell, History, Home, Scale, ClipboardCheck } from "lucide-react";
+import { Activity, BarChart3, Cloud, Dumbbell, History, Home, Scale, ClipboardCheck } from "lucide-react";
 
 const links = [
   { href: "/", label: "Accueil", icon: Home },
@@ -10,6 +10,7 @@ const links = [
   { href: "/sport", label: "Sport", icon: Dumbbell },
   { href: "/recap", label: "Récap", icon: ClipboardCheck },
   { href: "/historique", label: "Historique", icon: History },
+  { href: "/bilan", label: "Bilan", icon: BarChart3 },
   { href: "/sync", label: "Sync", icon: Cloud }
 ];
 

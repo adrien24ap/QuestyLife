@@ -9,6 +9,7 @@ import type { Mission, SportSession, WaterLog, WeightEntry } from "@/types";
 import { DashboardCard } from "./DashboardCard";
 import { MissionTracker } from "./MissionTracker";
 import { ProgressBar } from "./ProgressBar";
+import { RewardsPanel } from "./RewardsPanel";
 import { WaterTracker } from "./WaterTracker";
 
 export function HomeDashboard() {
@@ -70,6 +71,10 @@ export function HomeDashboard() {
         <MissionTracker />
         <WaterTracker />
       </section>
+
+      <div style={{ marginTop: 16 }}>
+        <RewardsPanel />
+      </div>
     </>
   );
 }
